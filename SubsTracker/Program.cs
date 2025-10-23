@@ -1,7 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using SubsTracker.Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Configure the database context to use SQL Server with a connection string.
+builder.Services.AddDbContext<SubsTrackerContext>(options =>
+    options.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Integrated Security=true"));
+
+// Add a developer exception page for database-related exceptions.
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
 
 var app = builder.Build();
 
