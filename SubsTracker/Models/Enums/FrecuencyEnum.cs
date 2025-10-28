@@ -2,7 +2,7 @@
 
 public enum FrecuencyEnum
 {
-    DAILY,
+    Daily,
     Weekly,
     Monthly,
     Quarterly,
