@@ -2,14 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 using SubsTracker.Database;
 using SubsTracker.Models.Entities;
+using SubsTracker.Models.ViewModels;
+using SubsTracker.Services;
 
 namespace SubsTracker.Controllers;
-public class SubscriptionController(SubsTrackerContext context) : Controller
+public class SubscriptionController(
+    SubsTrackerContext context,
+    ISubscriptionService subscriptionService) : Controller
 {
     // GET: Subscription
     public async Task<IActionResult> Index()
     {
-        return View(await context.Subscriptions.ToListAsync());
+        return View(await subscriptionService.GetAllSubscriptionsAsync());
+        // return View(await context.Subscriptions.ToListAsync());
     }
 
     // GET: Subscription/Details/5
@@ -41,15 +46,14 @@ public class SubscriptionController(SubsTrackerContext context) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name,Description,Value,Currency,Category,PaymentDate,Frecuency")] SubscriptionEntity subscriptionEntity)
+    public async Task<IActionResult> Create([Bind("Id,Name,Description,Value,Currency,Category,PaymentDate,Frecuency")] SubscriptionViewModel subscription)
     {
         if (ModelState.IsValid)
         {
-            context.Add(subscriptionEntity);
-            await context.SaveChangesAsync();
+            await subscriptionService.CreateSubscriptionAsync(subscription);
             return RedirectToAction(nameof(Index));
         }
-        return View(subscriptionEntity);
+        return View(subscription);
     }
 
     // GET: Subscription/Edit/5

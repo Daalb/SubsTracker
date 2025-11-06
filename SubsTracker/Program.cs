@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SubsTracker.Database;
+using SubsTracker.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddDbContext<SubsTrackerContext>(options =>
 // Add a developer exception page for database-related exceptions.
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Add Services to the container.
+builder.Services.AddTransient<ISubscriptionService, SubscriptionService>();
 
 var app = builder.Build();
 
