@@ -14,7 +14,6 @@ public class SubscriptionController(
     public async Task<IActionResult> Index()
     {
         return View(await subscriptionService.GetAllSubscriptionsAsync());
-        // return View(await context.Subscriptions.ToListAsync());
     }
 
     // GET: Subscription/Details/5
@@ -46,7 +45,7 @@ public class SubscriptionController(
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name,Description,Value,Currency,Category,PaymentDate,Frecuency")] SubscriptionViewModel subscription)
+    public async Task<IActionResult> Create(SubscriptionViewModel subscription)
     {
         if (ModelState.IsValid)
         {

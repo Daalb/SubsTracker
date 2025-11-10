@@ -5,7 +5,7 @@ namespace SubsTracker.Models.ViewModels;
 
 public class SubscriptionViewModel
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     [Required, MaxLength(30)]
     public string Name { get; set; } = null!;
