@@ -8,11 +8,36 @@ namespace SubsTracker.Services;
 public interface ISubscriptionService
 {
     Task<List<SubscriptionViewModel>> GetAllSubscriptionsAsync();
+    Task<SubscriptionViewModel> GetSubscriptionByIdAsync(string id);
     Task<SubscriptionViewModel> CreateSubscriptionAsync(SubscriptionViewModel subscription);
+    Task DeleteSubscriptionAsync(SubscriptionViewModel subscription);
 }
 
 public class SubscriptionService(SubsTrackerContext context) : ISubscriptionService
 {
+    public async Task<SubscriptionViewModel> GetSubscriptionByIdAsync(string id)
+    {
+        var subscriptionEntity = await context.Subscriptions
+            .Where(sub => sub.Id == id)
+            .FirstOrDefaultAsync();
+        
+        if(subscriptionEntity is not null)
+        {
+            return new SubscriptionViewModel
+            {
+                Id = subscriptionEntity.Id,
+                Name = subscriptionEntity.Name,
+                Description = subscriptionEntity.Description,
+                Value = subscriptionEntity.Value,
+                Currency = subscriptionEntity.Currency,
+                Category = subscriptionEntity.Category,
+                PaymentDate = subscriptionEntity.PaymentDate,
+                Frecuency = subscriptionEntity.Frecuency
+            };
+        }
+        return null!;
+    }
+
     public async Task<List<SubscriptionViewModel>> GetAllSubscriptionsAsync()
     {
         var subscriptions = await context.Subscriptions.ToListAsync();
@@ -50,4 +75,12 @@ public class SubscriptionService(SubsTrackerContext context) : ISubscriptionServ
         return subscription;
     }
 
+    public async Task DeleteSubscriptionAsync(SubscriptionViewModel subscription)
+    {
+        if (subscription != null)
+        {
+            context.Subscriptions.Remove(subscription);
+            await context.SaveChangesAsync();
+        }
+    }
 }

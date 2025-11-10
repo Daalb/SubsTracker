@@ -24,14 +24,13 @@ public class SubscriptionController(
             return NotFound();
         }
 
-        var subscriptionEntity = await context.Subscriptions
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (subscriptionEntity == null)
+        var subscription = await subscriptionService.GetSubscriptionByIdAsync(id);
+        if (subscription == null)
         {
             return NotFound();
         }
 
-        return View(subscriptionEntity);
+        return View(subscription);
     }
 
     // GET: Subscription/Create
@@ -114,14 +113,13 @@ public class SubscriptionController(
             return NotFound();
         }
 
-        var subscriptionEntity = await context.Subscriptions
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (subscriptionEntity == null)
+        var subscription = await subscriptionService.GetSubscriptionByIdAsync(id);
+        if (subscription == null)
         {
             return NotFound();
         }
 
-        return View(subscriptionEntity);
+        return View(subscription);
     }
 
     // POST: Subscription/Delete/5
@@ -129,8 +127,8 @@ public class SubscriptionController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(string id)
     {
-        var subscriptionEntity = await context.Subscriptions.FindAsync(id);
-        if (subscriptionEntity != null)
+        var subscription = await subscriptionService.GetSubscriptionByIdAsync(id);
+        if (subscription != null)
         {
             context.Subscriptions.Remove(subscriptionEntity);
         }
