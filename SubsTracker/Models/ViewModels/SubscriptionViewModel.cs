@@ -25,4 +25,6 @@ public class SubscriptionViewModel
     public DateTime PaymentDate { get; set; }
 
     public FrecuencyEnum Frecuency { get; set; }
+
+    public bool IsActive { get; set; } = true;
 }

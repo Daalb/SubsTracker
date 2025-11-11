@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SubsTracker.Database;
 
@@ -11,9 +12,11 @@ using SubsTracker.Database;
 namespace SubsTracker.Migrations
 {
     [DbContext(typeof(SubsTrackerContext))]
-    partial class SubsTrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20251111133143_Update_AddIsActivePropertyChangeValueType")]
+    partial class Update_AddIsActivePropertyChangeValueType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

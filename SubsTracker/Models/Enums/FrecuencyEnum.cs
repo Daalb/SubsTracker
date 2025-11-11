@@ -6,5 +6,6 @@ public enum FrecuencyEnum
     Weekly,
     Monthly,
     Quarterly,
+    Semesterly,
     Anually
 }
