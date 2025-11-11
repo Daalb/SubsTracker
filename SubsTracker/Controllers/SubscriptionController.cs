@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SubsTracker.Database;
-using SubsTracker.Models.Entities;
 using SubsTracker.Models.ViewModels;
 using SubsTracker.Services;
 
 namespace SubsTracker.Controllers;
 public class SubscriptionController(
-    SubsTrackerContext context,
     ISubscriptionService subscriptionService) : Controller
 {
     // GET: Subscription
@@ -62,7 +59,7 @@ public class SubscriptionController(
             return NotFound();
         }
 
-        var subscriptionEntity = await context.Subscriptions.FindAsync(id);
+        var subscriptionEntity = await subscriptionService.GetSubscriptionByIdAsync(id);
         if (subscriptionEntity == null)
         {
             return NotFound();
@@ -75,9 +72,9 @@ public class SubscriptionController(
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Description,Value,Currency,Category,PaymentDate,Frecuency")] SubscriptionEntity subscriptionEntity)
+    public async Task<IActionResult> Edit(string id, SubscriptionViewModel subscription)
     {
-        if (id != subscriptionEntity.Id)
+        if (id != subscription.Id)
         {
             return NotFound();
         }
@@ -86,12 +83,11 @@ public class SubscriptionController(
         {
             try
             {
-                context.Update(subscriptionEntity);
-                await context.SaveChangesAsync();
+                await subscriptionService.UpdateSubscriptionAsync(subscription);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SubscriptionEntityExists(subscriptionEntity.Id))
+                if (!await subscriptionService.SubscriptionEntityExists(subscription.Id))
                 {
                     return NotFound();
                 }
@@ -102,7 +98,7 @@ public class SubscriptionController(
             }
             return RedirectToAction(nameof(Index));
         }
-        return View(subscriptionEntity);
+        return View(subscription);
     }
 
     // GET: Subscription/Delete/5
@@ -134,10 +130,5 @@ public class SubscriptionController(
         }
 
         return RedirectToAction(nameof(Index));
-    }
-
-    private bool SubscriptionEntityExists(string id)
-    {
-        return context.Subscriptions.Any(e => e.Id == id);
     }
 }

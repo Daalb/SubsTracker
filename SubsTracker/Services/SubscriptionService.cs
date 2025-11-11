@@ -10,7 +10,9 @@ public interface ISubscriptionService
     Task<List<SubscriptionViewModel>> GetAllSubscriptionsAsync();
     Task<SubscriptionViewModel> GetSubscriptionByIdAsync(string id);
     Task<SubscriptionViewModel> CreateSubscriptionAsync(SubscriptionViewModel subscription);
+    Task<SubscriptionViewModel> UpdateSubscriptionAsync(SubscriptionViewModel subscription);
     Task DeleteSubscriptionAsync(string id);
+    Task<bool> SubscriptionEntityExists(string id);
 }
 
 public class SubscriptionService(SubsTrackerContext context) : ISubscriptionService
@@ -20,8 +22,8 @@ public class SubscriptionService(SubsTrackerContext context) : ISubscriptionServ
         var subscriptionEntity = await context.Subscriptions
             .Where(sub => sub.Id == id)
             .FirstOrDefaultAsync();
-        
-        if(subscriptionEntity is not null)
+
+        if (subscriptionEntity is not null)
         {
             return new SubscriptionViewModel
             {
@@ -75,6 +77,24 @@ public class SubscriptionService(SubsTrackerContext context) : ISubscriptionServ
         return subscription;
     }
 
+    public async Task<SubscriptionViewModel> UpdateSubscriptionAsync(SubscriptionViewModel subscription)
+    {
+        var subscriptionEntity = new SubscriptionEntity
+        {
+            Id = subscription.Id,
+            Name = subscription.Name,
+            Description = subscription.Description,
+            Value = subscription.Value,
+            Currency = subscription.Currency,
+            Category = subscription.Category,
+            PaymentDate = subscription.PaymentDate,
+            Frecuency = subscription.Frecuency
+        };
+        context.Update(subscriptionEntity);
+        await context.SaveChangesAsync();
+        return subscription;
+    }
+
     public async Task DeleteSubscriptionAsync(string id)
     {
         var subscription = await context.Subscriptions
@@ -86,5 +106,10 @@ public class SubscriptionService(SubsTrackerContext context) : ISubscriptionServ
             context.Subscriptions.Remove(subscription);
             await context.SaveChangesAsync();
         }
+    }
+
+    public Task<bool> SubscriptionEntityExists(string id)
+    {
+        return context.Subscriptions.AnyAsync(e => e.Id == id);
     }
 }
