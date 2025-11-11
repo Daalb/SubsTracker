@@ -130,10 +130,9 @@ public class SubscriptionController(
         var subscription = await subscriptionService.GetSubscriptionByIdAsync(id);
         if (subscription != null)
         {
-            context.Subscriptions.Remove(subscriptionEntity);
+            await subscriptionService.DeleteSubscriptionAsync(id);
         }
 
-        await context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 

@@ -10,7 +10,7 @@ public interface ISubscriptionService
     Task<List<SubscriptionViewModel>> GetAllSubscriptionsAsync();
     Task<SubscriptionViewModel> GetSubscriptionByIdAsync(string id);
     Task<SubscriptionViewModel> CreateSubscriptionAsync(SubscriptionViewModel subscription);
-    Task DeleteSubscriptionAsync(SubscriptionViewModel subscription);
+    Task DeleteSubscriptionAsync(string id);
 }
 
 public class SubscriptionService(SubsTrackerContext context) : ISubscriptionService
@@ -75,8 +75,12 @@ public class SubscriptionService(SubsTrackerContext context) : ISubscriptionServ
         return subscription;
     }
 
-    public async Task DeleteSubscriptionAsync(SubscriptionViewModel subscription)
+    public async Task DeleteSubscriptionAsync(string id)
     {
+        var subscription = await context.Subscriptions
+            .Where(sub => sub.Id == id)
+            .FirstOrDefaultAsync();
+
         if (subscription != null)
         {
             context.Subscriptions.Remove(subscription);
